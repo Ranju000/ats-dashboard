@@ -20,7 +20,7 @@ def get_connection():
 @st.cache_data
 def load_data():
     conn = get_connection()
-    df = pd.read_sql("SELECT * FROM `nov submissions 2025_2025`", conn)
+    df = pd.read_csv("data/Nov_Month_Submission.csv")
     conn.close()
 
     # Replace NULL with 0 for calculations
