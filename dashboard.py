@@ -1,43 +1,29 @@
 import streamlit as st
 import pandas as pd
-import mysql.connector
 import plotly.express as px
 
-# ---------------------------
-# MySQL connection
-# ---------------------------
-def get_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Rockstar@000",
-        database="ranjudb"
-    )
-
-# ---------------------------
-# Load data from DB
-# ---------------------------
+# ------------------------------------------------------------
+# Load CSV (No MySQL)
+# ------------------------------------------------------------
 @st.cache_data
 def load_data():
-    conn = get_connection()
-    return pd.read_csv("data/Nov_Month_Submission.csv")
-    conn.close()
-
-    # Replace NULL with 0 for calculations
+    df = pd.read_csv("data/Nov_Month_Submission.csv")
+    
+    # Fill empty with 0 for numerical columns
     df = df.fillna(0)
     return df
 
-# ---------------------------
+# ------------------------------------------------------------
 # Streamlit UI
-# ---------------------------
+# ------------------------------------------------------------
 st.title("📊 Monthly Submissions Dashboard")
-st.write("Dashboard generated from MySQL attendance table")
+st.write("Dashboard generated from CSV file (Nov Month Submission)")
 
 df = load_data()
 
-# ---------------------------
+# ------------------------------------------------------------
 # Filters
-# ---------------------------
+# ------------------------------------------------------------
 st.sidebar.header("Filters")
 
 all_employees = df["name"].unique()
@@ -54,17 +40,17 @@ if selected_employee != "All":
 if selected_week != "All":
     filtered = filtered[filtered["week"] == selected_week]
 
-# ---------------------------
-# Data Preview
-# ---------------------------
+# ------------------------------------------------------------
+# Show filtered data
+# ------------------------------------------------------------
 st.subheader("📋 Filtered Data")
 st.dataframe(filtered)
 
-# ---------------------------
+# ------------------------------------------------------------
 # Daily Hours Chart
-# ---------------------------
+# ------------------------------------------------------------
 if not filtered.empty:
-    st.subheader("📈 November_Submission_2025")
+    st.subheader("📈 Daily Submission Hours (Nov 2025)")
 
     daily_df = filtered.melt(
         id_vars=["name", "week"],
@@ -82,23 +68,26 @@ if not filtered.empty:
     )
     st.plotly_chart(fig)
 
-# ---------------------------
+# ------------------------------------------------------------
 # Weekly Total Chart
-# ---------------------------
-st.subheader("📅 November_Submission_2025")
+# ------------------------------------------------------------
+st.subheader("📅 Weekly Total Submissions")
 
-fig2 = px.bar(
-    filtered,
-    x="week",
-    y="weekly_total",
-    color="name",
-    title="Weekly Total Submissions"
-)
-st.plotly_chart(fig2)
+if "weekly_total" in filtered.columns:
+    fig2 = px.bar(
+        filtered,
+        x="week",
+        y="weekly_total",
+        color="name",
+        title="Weekly Total Submissions"
+    )
+    st.plotly_chart(fig2)
+else:
+    st.warning("⚠ 'weekly_total' column not found in CSV")
 
-# ---------------------------
+# ------------------------------------------------------------
 # Export filtered data
-# ---------------------------
+# ------------------------------------------------------------
 st.subheader("⬇ Export Data")
 
 st.download_button(
