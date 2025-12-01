@@ -8,7 +8,6 @@ import plotly.express as px
 @st.cache_data
 def load_data():
     df = pd.read_csv("data/Nov_Month_Submission.csv")
-    
     # Fill empty with 0 for numerical columns
     df = df.fillna(0)
     return df
