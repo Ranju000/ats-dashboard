@@ -49,7 +49,7 @@ st.dataframe(filtered)
 # Daily Hours Chart
 # ------------------------------------------------------------
 if not filtered.empty:
-    st.subheader("📈 Daily Submission Hours (Nov 2025)")
+    st.subheader("📈 Daily Submission (Nov 2025)")
 
     daily_df = filtered.melt(
         id_vars=["name", "week"],
@@ -70,7 +70,7 @@ if not filtered.empty:
 # ------------------------------------------------------------
 # Weekly Total Chart
 # ------------------------------------------------------------
-st.subheader("📅 Weekly Total Submissions")
+st.subheader("📅 Monthly Total Submissions")
 
 if "weekly_total" in filtered.columns:
     fig2 = px.bar(
@@ -78,7 +78,7 @@ if "weekly_total" in filtered.columns:
         x="week",
         y="weekly_total",
         color="name",
-        title="Weekly Total Submissions"
+        title="Monthly Total Submissions"
     )
     st.plotly_chart(fig2)
 else:
