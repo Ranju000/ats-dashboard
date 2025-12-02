@@ -49,7 +49,7 @@ st.dataframe(filtered)
 # Daily Hours Chart
 # ------------------------------------------------------------
 if not filtered.empty:
-    st.subheader("📈 Daily Submission (Nov 2025)")
+    st.subheader("📈 Weekly Submission (Nov 2025)")
 
     daily_df = filtered.melt(
         id_vars=["name", "week"],
